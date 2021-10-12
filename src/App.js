@@ -6,11 +6,13 @@ import SelectAoiInput from './components/select-aoi-input';
 import SelectDataTypeInput from './components/select-data-type-input';
 import SelectLayerTypeInput from './components/select-layer-type-input';
 import { markerStyle } from './map-style';
+import SelectedMarkerInfoPanel from './components/selected-marker-info-panel';
+import PanelSection from './components/styled-components/panel-section.styled';
 
 const SYNS_API_KEY = ''; // Set your sysnpective API key here
 const SYNS_TILE_SERVER_URL = ''; //Set your sysnpective title server url here, it should look something like htps://tiles.synspective.io/v2
 const SYNS_API_URL = ''; //Set your sysnpective title server url here, it should look something like htps://api.ldm.synspective.io/v2
-const MAPBOX_TOKEN = ''; // Set your mapbox token herere
+const MAPBOX_TOKEN = ''; // Set your mapbox token here
 
 function App() {
 	const [viewport, setViewport] = useState({
@@ -25,6 +27,7 @@ function App() {
 	const [currentDataType, setCurrentDataType] = useState('ascending'); // ascending, descending, vertical, horizontal
 	const [currentLayerType, setCurrentLayerType] = useState('ps-points'); //ps-points, h3-hexagon
 	const [selectedFeature, setSelectedFeature] = useState();
+	const [markerData, setMarkerData] = useState();
 
 	useEffect(() => {
 		const getAoiList = () => {
@@ -50,8 +53,27 @@ function App() {
 	}, [aoiList]);
 
 	useEffect(() => {
+		const getSelectedFeature = (markerId) => {
+			axios
+				.get(`${SYNS_API_URL}/markers/${markerId}`, {
+					params: {
+						api_key: SYNS_API_KEY,
+						timestamps: true,
+					},
+				})
+				.then((response) => {
+					const {
+						data: { marker },
+					} = response;
+					setMarkerData(marker);
+				});
+		};
+
 		if (selectedFeature) {
-			console.log(selectedFeature);
+			const {
+				feature: { id },
+			} = selectedFeature;
+			getSelectedFeature(id);
 		}
 	}, [selectedFeature]);
 
@@ -60,14 +82,12 @@ function App() {
 			const {
 				minAndMaxTotalDisplacement: { min, max },
 			} = currentAoi[currentDataType];
-			console.log({ min, max });
 			return { min, max };
 		}
 	}, [currentAoi, currentDataType]);
 
 	const latestTimestamp = useMemo(() => {
 		if (currentAoi && currentAoi[currentDataType]) {
-			console.log('ddd', currentAoi);
 			const {
 				timestamp: { latest },
 			} = currentAoi[currentDataType];
@@ -124,20 +144,23 @@ function App() {
 					</Source>
 				)}
 			</MapGL>
-			<ControlPanel>
-				<SelectAoiInput
-					aoiList={aoiList}
-					setCurrentAoi={setCurrentAoi}
-				/>
-				<SelectDataTypeInput
-					currentDataType={currentDataType}
-					setCurrentDataType={setCurrentDataType}
-				/>
-				<SelectLayerTypeInput
-					currentLayerType={currentLayerType}
-					setCurrentLayerType={setCurrentLayerType}
-				/>
-			</ControlPanel>
+			<PanelSection>
+				<ControlPanel>
+					<SelectAoiInput
+						aoiList={aoiList}
+						setCurrentAoi={setCurrentAoi}
+					/>
+					<SelectDataTypeInput
+						currentDataType={currentDataType}
+						setCurrentDataType={setCurrentDataType}
+					/>
+					<SelectLayerTypeInput
+						currentLayerType={currentLayerType}
+						setCurrentLayerType={setCurrentLayerType}
+					/>
+				</ControlPanel>
+				<SelectedMarkerInfoPanel markerData={markerData} />
+			</PanelSection>
 		</>
 	);
 }
