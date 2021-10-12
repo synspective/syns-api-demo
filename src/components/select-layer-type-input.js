@@ -3,7 +3,7 @@ import React from 'react';
 const SelectLayerTypeInput = ({ currentLayerType, setCurrentLayerType }) => {
 	return (
 		<div>
-			<label for="layer-type">Choose a layer type: </label>
+			<label htmlFor="layer-type">Choose a layer type: </label>
 			<select
 				name="layer-type"
 				id="layer-type"

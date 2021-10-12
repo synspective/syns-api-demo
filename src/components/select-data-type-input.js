@@ -3,7 +3,7 @@ import React from 'react';
 const SelectDataTypeInput = ({ currentDataType, setCurrentDataType }) => {
 	return (
 		<div>
-			<label for="layer-type">Choose a data type:</label>
+			<label htmlFor="layer-type">Choose a data type:</label>
 			<select
 				name="data-type"
 				id="data-type"

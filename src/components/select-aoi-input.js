@@ -3,7 +3,7 @@ import React from 'react';
 const SelectAoiInput = ({ aoiList, setCurrentAoi }) => {
 	return (
 		<div>
-			<label for="aoi-list">Choose an AOI: </label>
+			<label htmlFor="aoi-list">Choose an AOI: </label>
 			{aoiList && (
 				<select
 					name="aoi-list"
