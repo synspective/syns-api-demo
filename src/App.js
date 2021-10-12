@@ -1,23 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import MapGL, { Source, Layer } from 'react-map-gl';
+import axios from 'axios';
 import ControlPanel from './components/control-panel';
 import SelectAoiInput from './components/select-aoi-input';
 import SelectDataTypeInput from './components/select-data-type-input';
 import SelectLayerTypeInput from './components/select-layer-type-input';
-import { locations } from './data/locations';
 import { markerStyle } from './map-style';
 
 const SYNS_API_KEY = ''; // Set your sysnpective API key here
 const SYNS_TILE_SERVER_URL = ''; //Set your sysnpective title server url here, it should look something like htps://tiles.synspective.io/v2
 const SYNS_API_URL = ''; //Set your sysnpective title server url here, it should look something like htps://api.ldm.synspective.io/v2
-const MAPBOX_TOKEN = ''; // Set your mapbox token here
-
-const getAoiList = async () => {
-	const aoiList = await fetch(
-		`${SYNS_API_URL}/aoi/4294967301936?api_key=ptc4KMdaVlU=.yeBhIm7sTj3SfRi91nwCZZs55VKX67bTNzc-H_WFvDQ=`,
-	);
-	console.log(aoiList);
-};
+const MAPBOX_TOKEN = ''; // Set your mapbox token herere
 
 function App() {
 	const [viewport, setViewport] = useState({
@@ -27,16 +20,32 @@ function App() {
 		bearing: 0,
 		pitch: 0,
 	});
-	const [aoiList, setAoiList] = useState(locations.locations);
+	const [aoiList, setAoiList] = useState();
 	const [currentAoi, setCurrentAoi] = useState();
 	const [currentDataType, setCurrentDataType] = useState('ascending'); // ascending, descending, vertical, horizontal
 	const [currentLayerType, setCurrentLayerType] = useState('ps-points'); //ps-points, h3-hexagon
 	const [selectedFeature, setSelectedFeature] = useState();
 
 	useEffect(() => {
-		if (aoiList) {
+		const getAoiList = () => {
+			axios
+				.get(`${SYNS_API_URL}/aoi`, {
+					params: {
+						api_key: SYNS_API_KEY,
+						timestamps: true,
+					},
+				})
+				.then((response) => {
+					const {
+						data: { locations },
+					} = response;
+					setAoiList(locations);
+					setCurrentAoi(locations[0]);
+				});
+		};
+
+		if (!aoiList) {
 			getAoiList();
-			setCurrentAoi(aoiList[0]);
 		}
 	}, [aoiList]);
 
@@ -58,6 +67,7 @@ function App() {
 
 	const latestTimestamp = useMemo(() => {
 		if (currentAoi && currentAoi[currentDataType]) {
+			console.log('ddd', currentAoi);
 			const {
 				timestamp: { latest },
 			} = currentAoi[currentDataType];
@@ -81,15 +91,6 @@ function App() {
 				: null,
 		);
 	};
-
-	// useEffect(() => {
-	// 	//https://dev.api.ldm.synspective.io/v2/aoi/4294967301936?api_key=ptc4KMdaVlU=.yeBhIm7sTj3SfRi91nwCZZs55VKX67bTNzc-H_WFvDQ=
-	// 	fetch(
-	// 		'https://dev.api.ldm.synspective.io/v2/aoi/4294967301936?api_key=ptc4KMdaVlU=.yeBhIm7sTj3SfRi91nwCZZs55VKX67bTNzc-H_WFvDQ=',
-	// 	)
-	// 		.then((response) => response.json())
-	// 		.then((data) => console.log(data));
-	// }, []);
 
 	return (
 		<>
