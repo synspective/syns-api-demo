@@ -4,8 +4,7 @@ import Panel from './styled-components/panel.styled';
 
 const SelectedMarkerInfoPanel = ({ markerData }) => {
 	const chartOptions = useMemo(() => {
-		if (markerData.points) {
-			console.log(markerData.points);
+		if (markerData && markerData.points) {
 			return {
 				grid: { top: 8, right: 8, bottom: 24, left: 36 },
 				xAxis: {
@@ -30,6 +29,8 @@ const SelectedMarkerInfoPanel = ({ markerData }) => {
 			};
 		}
 	}, [markerData]);
+
+	if (!chartOptions) return null;
 
 	return (
 		<Panel>
