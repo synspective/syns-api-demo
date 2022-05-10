@@ -82,8 +82,10 @@ function App() {
 			const {
 				minAndMaxTotalDisplacement: { min, max },
 			} = currentAoi[currentDataType];
+
 			return { min, max };
 		}
+		return { min: 0, max: 0 };
 	}, [currentAoi, currentDataType]);
 
 	const latestTimestamp = useMemo(() => {
