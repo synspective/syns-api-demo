@@ -16,8 +16,8 @@ const MAPBOX_TOKEN = ''; // Set your mapbox token here
 
 function App() {
 	const [viewport, setViewport] = useState({
-		latitude: 34.43317979,
-		longitude: 135.24820808,
+		latitude: 16.9751,
+		longitude: 82.2498,
 		zoom: 12,
 		bearing: 0,
 		pitch: 0,
@@ -38,12 +38,10 @@ function App() {
 						timestamps: true,
 					},
 				})
-				.then((response) => {
-					const {
-						data: { locations },
-					} = response;
-					setAoiList(locations);
-					setCurrentAoi(locations[0]);
+				.then(({data}) => {
+
+					setAoiList(data.data);
+					setCurrentAoi(data.data[0]);
 				});
 		};
 
@@ -127,11 +125,11 @@ function App() {
 			>
 				{currentAoi && (
 					<Source
-						id={`land-subsidence_${currentAoi.id}_${currentDataType}_${latestTimestamp}_markers`}
-						key={`land-subsidence_${currentAoi.id}_${currentDataType}_${latestTimestamp}_markers`}
+						id={`land-subsidence_${currentAoi.uuid}_${currentDataType}_${latestTimestamp}_markers`}
+						key={`land-subsidence_${currentAoi.uuid}_${currentDataType}_${latestTimestamp}_markers`}
 						type="vector"
 						tiles={[
-							`${SYNS_TILE_SERVER_URL}/land-subsidence/tiles/${currentAoi.id}/${currentDataType}/${latestTimestamp}/markers/{z}/{x}/{y}?api_key=${SYNS_API_KEY}`,
+							`${SYNS_TILE_SERVER_URL}/land-subsidence/tiles/${currentAoi.uuid}/${currentDataType}/${latestTimestamp}/markers/{z}/{x}/{y}?api_key=${SYNS_API_KEY}`,
 						]}
 						maxzoom={14}
 					>

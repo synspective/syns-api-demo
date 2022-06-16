@@ -7,7 +7,7 @@ export const markerStyle = (
 	id: `markers`,
 	source: 'mapbox',
 	type: 'circle',
-	'source-layer': `land-subsidence_${currentAoi.id}_${currentDataType}_${latestTimestamp}_markers`,
+	'source-layer': `land-subsidence_${currentAoi.uuid}_${currentDataType}_${latestTimestamp}_markers`,
 	paint: {
 		'circle-color': [
 			'interpolate',

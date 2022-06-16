@@ -1,6 +1,7 @@
 import React from 'react';
 
 const SelectAoiInput = ({ aoiList, setCurrentAoi }) => {
+	console.log(aoiList)
 	return (
 		<div>
 			<label htmlFor="aoi-list">Choose an AOI: </label>
@@ -8,18 +9,18 @@ const SelectAoiInput = ({ aoiList, setCurrentAoi }) => {
 				<select
 					name="aoi-list"
 					id="aoi-list"
-					defaultValue={aoiList[0].id}
+					defaultValue={aoiList[0].uuid}
 					onChange={(e) => {
 						const found = aoiList.find((aoi) => {
-							return aoi.id === +e.target.value;
+							return aoi.uuid === +e.target.value;
 						});
 						return setCurrentAoi(found);
 					}}
 				>
 					{aoiList.map((aoi) => {
 						return (
-							<option key={aoi.id} value={aoi.id}>
-								{aoi.id}
+							<option key={aoi.uuid} value={aoi.uuid}>
+								{aoi.uuid}
 							</option>
 						);
 					})}
