@@ -1,4 +1,13 @@
-# Synspective API demo app
+# Synspective Platform-API Demo App
+
+This is a sample react app to demonstrate the use of [Synspective's Platform API](https://app.swaggerhub.com/apis-docs/Synspective/Syns_Platform_API/1.0).
+
+## Features
+- Fetch the list of AOI(Area of Interest) 
+- Visualize the Map Tiles using the Synspective's Tiles server. 
+
+## Technology
+[DECK.GL](https://deck.gl/)
 
 ## Setting up
 
